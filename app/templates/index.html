@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>Chat</title>
+</head>
+<body>
+
+    <h1> Login to Chatroom </h1>
+    <form action="" method="POST" novalidate autocomplete="off">
+        {{ form.hidden_tag() }}
+        <div style="text-align: center">
+            <p>
+                {{ form.username(size=32) }}
+            </p>
+            <p>
+                {{ form.room(size=32) }}
+            </p>
+            <p>
+                {{ form.submit }}
+            </p>
+        </div>
+    </form>
+
+</body>
+</html>
