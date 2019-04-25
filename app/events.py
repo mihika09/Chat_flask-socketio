@@ -10,7 +10,7 @@ def joined(message):
     print("Helllllllllooooooooooooooooooooo")
     room = session.get('room')
     join_room(room)
-    emit('status', {'msg': session.get('username') + ' has entered the room.'}, room=room)
+    emit('status', {'username': session.get('username'), 'status': 'joined'}, room=room)
 
 
 @socketio.on('text', namespace='/chat')
@@ -27,4 +27,4 @@ def left(message):
     A status message is broadcast to all people in the room."""
     room = session.get('room')
     leave_room(room)
-    emit('status', {'msg': session.get('username') + ' has left the room.'}, room=room)
+    emit('status', {'username': session.get('username'), 'status': 'left'}, room=room)

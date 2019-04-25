@@ -1,5 +1,3 @@
-const username = document.getElementById('username')
-const room = document.getElementById('room')
 const enterChat = document.getElementById('enterChat')
 const msgBox = document.getElementById('typeMsg')
 const screen = document.getElementById('chatDisplay')
@@ -8,7 +6,6 @@ let name
 let roomId
 let color = 'rgb(' + random(3, 240) + ',' + random(3, 240) + ',' + random(3, 240) + ')'
 
-username.focus()
 msgBox.value = ''
 msgBox.disabled = true
 
@@ -87,7 +84,8 @@ function addToList (value) {
 socket.on('status', function(data) {
         // $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
         // $('#chat').scrollTop($('#chat')[0].scrollHeight);
-        let message = data.msg
+        let username = data.username
+        let status = data.status
         notify(message)
         addToList(data['name'])
     });
