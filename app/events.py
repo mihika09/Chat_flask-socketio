@@ -28,3 +28,9 @@ def left(message):
     room = session.get('room')
     leave_room(room)
     emit('status', {'username': session.get('username'), 'status': 'left'}, room=room)
+
+
+@socketio.on('disconnect', namespace='/chat')
+def disconnect():
+    room = session.get('room')
+    emit('status', {'username': session.get('username'), 'status': 'left'}, room=room)

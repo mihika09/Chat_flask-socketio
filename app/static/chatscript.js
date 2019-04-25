@@ -6,8 +6,8 @@ let name
 let roomId
 let color = 'rgb(' + random(3, 240) + ',' + random(3, 240) + ',' + random(3, 240) + ')'
 
+
 msgBox.value = ''
-msgBox.disabled = true
 
 var socket;
 socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
@@ -86,8 +86,9 @@ socket.on('status', function(data) {
         // $('#chat').scrollTop($('#chat')[0].scrollHeight);
         let username = data.username
         let status = data.status
+        message = username + ': ' + status
         notify(message)
-        addToList(data['name'])
+        addToList(data['username'])
     });
 
 socket.on('message', function(data) {
