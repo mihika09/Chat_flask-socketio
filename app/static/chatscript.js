@@ -11,6 +11,8 @@ msgBox.value = ''
 msgBox.focus()
 
 let socket
+console.log("document.domain: ", document.domain)
+console.log("location.port: ", location.port)
 socket = io.connect('http://' + document.domain + ':' + location.port + '/chat')
 
 socket.on('connect', function () {
@@ -82,8 +84,15 @@ socket.on('status', function (data) {
   console.log(data)
   console.log('data.state', data.state)
   let message
-  if ( data.username === name) notify('You have joined the chat!')
+  console.log('data.username: ', data.username)
+  console.log('name: ', name)
+  if ( data.username === name)
+  {
+     console.log("Heyo")
+     notify('You have joined the chat!')
+  }
   else {
+    console.log("Ummmm")
     message = data.state === 'joined' ? ' has joined the chat!' : ' left'
     notify(data.username + message)
   }
