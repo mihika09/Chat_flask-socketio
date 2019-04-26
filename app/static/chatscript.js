@@ -1,20 +1,21 @@
-const enterChat = document.getElementById('enterChat')
 const msgBox = document.getElementById('typeMsg')
 const screen = document.getElementById('chatDisplay')
 const sendBtn = document.getElementById('sendMsg')
-let name
-let roomId
+const leaveChat = document.getElementById('leave')
+const userInfo = document.getElementById('user')
+let name = userInfo.textContent.split(' ')[1]
+
 let color = 'rgb(' + random(3, 240) + ',' + random(3, 240) + ',' + random(3, 240) + ')'
 
-
 msgBox.value = ''
+msgBox.focus()
 
-var socket;
-socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+let socket
+socket = io.connect('http://' + document.domain + ':' + location.port + '/chat')
 
-socket.on('connect', function() {
-    socket.emit('joined', {});
-});
+socket.on('connect', function () {
+  socket.emit('joined', {})
+})
 
 function notify (message) {
   let notification = document.createElement('p')
@@ -39,15 +40,11 @@ function getTime () {
 }
 
 sendBtn.addEventListener('click', () => {
-  let message = msgBox.value
-  socket.emit('text', {msg: message});
+  if (msgBox.value.trim() !== '') socket.emit('text', { msg: msgBox.value })
 })
 
 msgBox.addEventListener('keydown', (e) => {
-  if (e.code === 'Enter' && msgBox.value.trim() !== '') {
-    let message = msgBox.value
-    socket.emit('text', {msg: message});
-  }
+  if (e.code === 'Enter' && msgBox.value.trim() !== '') socket.emit('text', { msg: msgBox.value })
 })
 
 function addMessage (message, msgClass, sender = name) {
@@ -81,27 +78,30 @@ function addToList (value) {
   list.appendChild(newUser)
 }
 
-socket.on('status', function(data) {
-        // $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
-        // $('#chat').scrollTop($('#chat')[0].scrollHeight);
-        let username = data.username
-        let status = data.status
-        message = username + ': ' + status
-        notify(message)
-        addToList(data['username'])
-    });
+socket.on('status', function (data) {
+  console.log(data)
+  console.log('data.state', data.state)
+  let message
+  if ( data.username === name) notify('You have joined the chat!')
+  else {
+    message = data.state === 'joined' ? ' has joined the chat!' : ' left'
+    notify(data.username + message)
+  }
+  addToList(data.username)
+})
 
-socket.on('message', function(data) {
-        // $('#chat').val($('#chat').val() + data.msg + '\n');
-        // $('#chat').scrollTop($('#chat')[0].scrollHeight);
-        let message = data.msg
-        addMessage(message)
-    });
+socket.on('message', function (data) {
+  console.log(data.username)
+  let msgClass = data.username === name ? 'message' : 'reply'
+  console.log(msgClass)
+  addMessage(data.msg, msgClass, data.username)
+})
 
-function leave_room() {
-    socket.emit('left', {}, function() {
-        socket.disconnect();
-        // go back to the login page
-        window.location.href = "{{ url_for('index') }}";
-    });
+function leaveRoom () {
+  socket.emit('left', {}, function () {
+    socket.disconnect()
+    window.location.href = "{{ url_for('index') }}"
+  })
 }
+
+leaveChat.addEventListener('click', leaveRoom)
